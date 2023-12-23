@@ -10,39 +10,39 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true, // remove all white space in the beginning and end of string
       maxLength: [40, 'A tour name must have less or equal than 40 characters'],
-      minLength: [10, 'A tour name must have more or equal than 10 characters'],
+      minLength: [10, 'A tour name must have more or equal than 10 characters']
       //validate: [validator.isAlpha, 'Tour name must only contain characters'],
     },
     slug: String,
     duration: {
       type: Number,
-      required: [true, 'A tour must have a duration'],
+      required: [true, 'A tour must have a duration']
     },
     maxGroupSize: {
       type: Number,
-      required: [true, 'A tour must have a group size'],
+      required: [true, 'A tour must have a group size']
     },
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'], // only these values are allowed
-        message: 'Difficulty is either: easy, medium, difficult',
-      },
+        message: 'Difficulty is either: easy, medium, difficult'
+      }
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
       min: [1, 'Rating must be above or equal to 1.0'],
-      max: [5, 'Rating must be below or equal to 5.0'],
+      max: [5, 'Rating must be below or equal to 5.0']
     },
     ratingsQuantity: {
       type: Number,
-      default: 0,
+      default: 0
     },
     price: {
       type: Number,
-      required: [true, 'A tour must have a price'],
+      required: [true, 'A tour must have a price']
     },
     priceDiscount: {
       type: Number,
@@ -52,38 +52,38 @@ const tourSchema = new mongoose.Schema(
           // this only points to current doc on NEW document creation
           return val < this.price;
         },
-        message: 'Discount price ({VALUE}) should be below regular price',
-      },
+        message: 'Discount price ({VALUE}) should be below regular price'
+      }
     },
     summary: {
       type: String,
       trim: true,
-      required: [true, 'A tour must have a description'],
+      required: [true, 'A tour must have a description']
     },
     description: {
       type: String,
-      trim: true,
+      trim: true
     },
     imageCover: {
       type: String,
-      required: [true, 'A tour must have a cover image'],
+      required: [true, 'A tour must have a cover image']
     },
     images: [String], // array of strings
     createdAt: {
       type: Date,
       default: Date.now(),
-      select: false, // hide this field from output
+      select: false // hide this field from output
     },
     startDates: [Date],
     secretTour: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  },
+    toObject: { virtuals: true }
+  }
 );
 
 tourSchema.virtual('durationWeeks').get(function () {
