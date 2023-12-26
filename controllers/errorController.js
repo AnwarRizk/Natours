@@ -6,9 +6,9 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  // const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  // console.log(value);
-  const message = `Duplicate field value: ${err.keyValue.name}. Please use another value!`;
+  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
+  //   console.log(value);
+  const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
 };
 
@@ -20,6 +20,14 @@ const handleValidationErrorDB = (err) => {
   //const message = `Invalid input data. ${err.message}`; // This is the same as above, but it's not as good because it's not as user friendly
   return new AppError(message, 400);
 };
+
+// This error is thrown when the user tries to log in with an invalid token
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again!', 401);
+
+// This error is thrown when the user tries to log in with an expired token
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired! Please log in again.', 401);
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -41,7 +49,7 @@ const sendErrorProd = (err, res) => {
     // Programming or other unknown error: don't leak error details
   } else {
     // 1) Log error
-    //console.error('ERROR 💥', err);
+    console.error('ERROR 💥', err);
 
     // 2) Send generic message
     res.status(500).json({
@@ -51,6 +59,7 @@ const sendErrorProd = (err, res) => {
   }
 };
 
+// This is the global error handling middleware
 module.exports = (err, req, res, next) => {
   //console.log(err.stack);
 
@@ -67,6 +76,8 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJWTError();
+    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
     sendErrorProd(error, res);
   }

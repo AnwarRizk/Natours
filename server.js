@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-// Handle uncaught exceptions (e.g. console.log(x)) - synchronous errors
+// Handle uncaught exceptions (e.g. Using undefined variables)
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.log(err.name, err.message);
