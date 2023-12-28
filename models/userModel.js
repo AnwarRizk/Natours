@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean, // This will be used for deleting users
+    default: true,
+    select: false // This will never show up in any output
+  }
 });
 
 userSchema.pre('save', async function (next) {
@@ -63,6 +68,14 @@ userSchema.pre('save', function (next) {
 
   // We need to subtract 1 second from the passwordChangedAt field because sometimes the token is created before the password is changed
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// This is a query middleware that will run before any find query is executed
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  // We only want to find users that have the active property set to true
+  this.find({ active: { $ne: false } });
   next();
 });
 
