@@ -34,21 +34,22 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single('photo');
 
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  // If there is no file, then we don't want to resize the photo
   if (!req.file) return next();
 
-  // The file is available in req.file.buffer
+  // We set the filename to be user-id-timestamp.jpeg
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  // The sharp() function returns an object with methods to modify the image
-  sharp(req.file.buffer)
+  // We use sharp to resize the image
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/img/users/${req.file.filename}`);
 
   next();
-};
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
