@@ -2,6 +2,8 @@
 
 > A full-stack tour booking web application built with Node.js, Express, MongoDB, and Pug.
 
+<img width="1905" height="1080" alt="Natours preview" src="https://github.com/user-attachments/assets/253f06c3-29f1-4ba9-a64a-0a8edec130cc" />
+
 ---
 
 ## Table of Contents
