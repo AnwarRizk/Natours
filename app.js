@@ -47,8 +47,10 @@ app.use('/api', limiter);
 
 // Body parser, reading data from the body into req.body
 app.use(express.json({ limit: '10kb' }));
+
 // Parse data from the URL encoded form (data that is coming from Update User Data form in account.pug file)
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 // Parse data from the URL encoded form
 app.use(cookieParser());
 
@@ -61,6 +63,7 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(
   hpp({
+    // This will allow us to whitelist certain parameters that we want to allow to be duplicated
     whitelist: [
       'duration',
       'ratingsQuantity',
